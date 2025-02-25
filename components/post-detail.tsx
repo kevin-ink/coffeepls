@@ -1,18 +1,29 @@
-import { Heart } from "lucide-react";
-import { MessageSquare, ThumbsUp, ThumbsDown } from "lucide-react";
-import { formatDistance, format } from "date-fns";
-import { PostProps } from "@/app/lib/definitions";
+import { format, formatDistance } from "date-fns";
+import { Heart, MessageSquare, ThumbsUp, ThumbsDown } from "lucide-react";
 
-export default function Post({ post }: { post: PostProps }) {
+interface PostProps {
+  username: string;
+  content: string;
+  beverage: string;
+  location: string;
+  created_at: string;
+  recommend: boolean;
+  id: number;
+}
+
+export default function PostDetail({ post }: { post: PostProps }) {
   const time_since = formatDistance(new Date(post.created_at), new Date(), {
     addSuffix: true,
   });
+  const formattedDate = format(
+    new Date(post.created_at),
+    "eeee, MMMM d, yyyy HH:mm a"
+  );
 
-  const formattedDate = format(post.created_at, "eeee, MMMM d, yyyy HH:mm a");
   const { username, content, beverage, location, recommend } = post;
 
   return (
-    <div className="w-full h-auto flex flex-col gap-y-2 p-5 border-primary border-t-2 first:border-t-0">
+    <div className="w-full h-auto flex flex-col gap-y-2 p-5 border-primary border-t-2 first:border-t-0 hover:cursor-pointer">
       <div className="flex flex-row gap-x-2 items-center">
         <span className="text-md">{username}</span>
         <p className="text-sm text-gray-700">{time_since}</p>
