@@ -32,6 +32,34 @@ export async function createPost(formData: FormData) {
   }
 }
 
+export async function updateCommentRating(id: number, change: number) {
+  try {
+    await sql("UPDATE comments SET rating = rating + $1 WHERE id = $2", [
+      change,
+      id,
+    ]);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to edit comment rating");
+  }
+}
+
+export async function createComment(formData: FormData) {
+  const content = formData.get("content");
+  const post_id = formData.get("post_id");
+  const username = await getSession().then((session) => session.username);
+
+  try {
+    await sql(
+      "INSERT INTO comments (post_id, username, content) VALUES ($1, $2, $3)",
+      [post_id, username, content]
+    );
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to create post");
+  }
+}
+
 export async function getUsername() {
   const username = await getSession().then((session) => session.username);
   return username;
@@ -81,5 +109,24 @@ export async function getPosts() {
   } catch (error) {
     console.error(error);
     throw new Error("Failed to get posts");
+  }
+}
+
+export async function getComments(post_id: number) {
+  try {
+    const comments = await sql(
+      `SELECT * FROM comments WHERE post_id = $1 ORDER BY created_at DESC`,
+      [post_id]
+    );
+    return comments.map((comment) => ({
+      id: comment.id,
+      username: comment.username,
+      content: comment.content,
+      created_at: comment.created_at,
+      rating: comment.rating,
+    }));
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to get comments");
   }
 }

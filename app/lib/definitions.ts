@@ -35,3 +35,11 @@ export interface PostProps {
   recommend: boolean;
   id: number;
 }
+
+export interface CommentProps {
+  username: string;
+  content: string;
+  created_at: string;
+  id: number;
+  rating: number;
+}

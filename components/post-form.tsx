@@ -25,6 +25,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { createPost } from "@/app/lib/data";
+import { NotebookPen } from "lucide-react";
 
 const PostSchema = z.object({
   content: z.string().min(1).max(1000),
@@ -33,7 +34,7 @@ const PostSchema = z.object({
   recommend: z.boolean(),
 });
 
-export default function PostForm() {
+export default function PostForm({ variant }: { variant?: string }) {
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof PostSchema>>({
@@ -60,7 +61,13 @@ export default function PostForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mt-6 text-xl h-10">New Post</Button>
+        {variant === "compact" ? (
+          <Button className="[&_svg]:size-6 py-6">
+            <NotebookPen />
+          </Button>
+        ) : (
+          <Button className="mt-6 text-xl h-10">New Post</Button>
+        )}
       </DialogTrigger>
       <DialogContent className="top-1/3 min-w-[750px] bg-white">
         <DialogHeader>

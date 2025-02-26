@@ -12,7 +12,7 @@ export default function Post({ post }: { post: PostProps }) {
   const { username, content, beverage, location, recommend } = post;
 
   return (
-    <div className="w-full h-auto flex flex-col gap-y-2 p-5 border-primary border-t-2 first:border-t-0">
+    <div className="w-full h-auto flex flex-col gap-y-2 p-5 border-primary border-t-2">
       <div className="flex flex-row gap-x-2 items-center">
         <span className="text-md">{username}</span>
         <p className="text-sm text-gray-700">{time_since}</p>
@@ -21,7 +21,7 @@ export default function Post({ post }: { post: PostProps }) {
         {beverage} <span className="font-normal">at</span>
         {location}
         {recommend ? (
-          <ThumbsUp size={24} className="fill-sky-500" />
+          <ThumbsUp size={24} className="fill-sky-600" />
         ) : (
           <ThumbsDown size={24} className="fill-red-500" />
         )}

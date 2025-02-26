@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "Your coffee companion.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} max-w-screen h-auto bg-background antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} max-w-screen max-h-screen bg-background antialiased`}
       >
         {children}
       </body>
