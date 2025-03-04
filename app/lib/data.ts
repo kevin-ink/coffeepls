@@ -19,6 +19,11 @@ export async function createPost(formData: FormData) {
   const beverage = formData.get("beverage");
   const location = formData.get("location");
   const recommend = formData.get("recommend") === "true";
+
+  const image = formData.get("image");
+  if (image) {
+  }
+
   const user_id = await getSession().then((session) => session.userId);
 
   try {
@@ -123,7 +128,6 @@ export async function getComments(post_id: number) {
       username: comment.username,
       content: comment.content,
       created_at: comment.created_at,
-      rating: comment.rating,
     }));
   } catch (error) {
     console.error(error);

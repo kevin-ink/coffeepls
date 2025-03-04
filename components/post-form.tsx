@@ -32,6 +32,16 @@ const PostSchema = z.object({
   beverage: z.string().min(1).max(50),
   location: z.string().min(1).max(150),
   recommend: z.boolean(),
+  image: z
+    .custom<File>((file) => {
+      if (!file) return false;
+      const validTypes = ["image/jpeg", "image/png"];
+      if (!(file instanceof File)) return false;
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) return false;
+      if (!validTypes.includes(file.type)) return false;
+    }, "Invalid image file. Accepted formats: JPEG, PNG")
+    .optional(),
 });
 
 export default function PostForm({ variant }: { variant?: string }) {
@@ -53,6 +63,9 @@ export default function PostForm({ variant }: { variant?: string }) {
     formData.append("content", values.content);
     formData.append("location", values.location);
     formData.append("recommend", values.recommend.toString());
+    if (values.image) {
+      formData.append("image", values.image);
+    }
     createPost(formData);
     setOpen(false);
     form.reset();
@@ -147,6 +160,31 @@ export default function PostForm({ variant }: { variant?: string }) {
                       {...field}
                       maxLength={1000}
                       className="resize-none h-32"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="image"
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem className="flex flex-row space-x-2 items-center">
+                  <FormLabel>Upload Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="image"
+                      className="hover:border-2"
+                      type="file"
+                      accept="image/jpeg, image/png"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          onChange(e.target.files[0]);
+                        }
+                      }}
+                      {...fieldProps}
                     />
                   </FormControl>
                   <FormMessage />
