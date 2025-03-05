@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { createPost } from "@/app/lib/data";
 import { NotebookPen } from "lucide-react";
+import { getSignedURL } from "@/app/s3";
 
 const PostSchema = z.object({
   content: z.string().min(1).max(1000),
@@ -39,8 +40,8 @@ const PostSchema = z.object({
       if (!(file instanceof File)) return false;
       const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) return false;
-      if (!validTypes.includes(file.type)) return false;
-    }, "Invalid image file. Accepted formats: JPEG, PNG")
+      return validTypes.includes(file.type);
+    }, "Invalid image file. Accepted formats: JPEG, PNG. Max size: 5MB")
     .optional(),
 });
 
@@ -57,18 +58,38 @@ export default function PostForm({ variant }: { variant?: string }) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof PostSchema>) {
+  async function onSubmit(values: z.infer<typeof PostSchema>) {
     const formData = new FormData();
     formData.append("beverage", values.beverage);
     formData.append("content", values.content);
     formData.append("location", values.location);
     formData.append("recommend", values.recommend.toString());
-    if (values.image) {
-      formData.append("image", values.image);
+
+    try {
+      if (values.image) {
+        const signedURLResult = getSignedURL();
+        if ("error" in signedURLResult) {
+          console.error(signedURLResult.error);
+          return;
+        }
+
+        const result = await signedURLResult;
+        if (result.url) {
+          await fetch(result.url, {
+            method: "PUT",
+            body: values.image,
+            headers: { "Content-Type": values.image.type },
+          });
+          formData.append("image_url", result.url.split("?")[0]);
+        }
+      }
+      createPost(formData);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setOpen(false);
+      form.reset();
     }
-    createPost(formData);
-    setOpen(false);
-    form.reset();
   }
 
   return (

@@ -41,12 +41,11 @@ export default function Timeline({ posts }: { posts: PostProps[] }) {
   return (
     <div className="pt-10">
       {posts.map((post) => (
-        <div
-          className="hover:cursor-pointer"
-          key={post.id}
-          onClick={() => handlePostClick(post.id, post.username)}
-        >
-          <Post post={post} />
+        <div key={post.id}>
+          <Post
+            post={post}
+            handleClick={() => handlePostClick(post.id, post.username)}
+          />
         </div>
       ))}
       <div className="mt-6 text-center text-gray-700">

@@ -9,6 +9,11 @@ import { sql } from "./lib/data";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 
+export async function getUserId() {
+  const session = await getSession();
+  return session.userId;
+}
+
 export async function getSession() {
   const session = await getIronSession<SessionData>(
     await cookies(),

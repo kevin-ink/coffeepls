@@ -2,7 +2,8 @@ import PostForm from "./post-form";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { getUsername } from "@/app/lib/data";
-import { Coffee, House, UserRound, CircleUser } from "lucide-react";
+import { logout } from "@/app/actions";
+import { Coffee, House, UserRound, CircleUser, LogOut } from "lucide-react";
 
 export default async function SideNav() {
   const username = await getUsername();
@@ -38,6 +39,15 @@ export default async function SideNav() {
               Profile
             </Button>
           </Link>
+          <form action={logout}>
+            <Button
+              variant="ghost"
+              className="text-xl xl:text-2xl [&_svg]:size-8 xl:[&_svg]:size-10 py-6"
+            >
+              <LogOut />
+              Logout
+            </Button>
+          </form>
         </div>
         <PostForm />
         <span className="text-xl mt-6">{username}</span>
@@ -52,6 +62,14 @@ export default async function SideNav() {
           <Link href="/">
             <Button variant="ghost" className="[&_svg]:size-10 py-6">
               <Coffee />
+            </Button>
+          </Link>
+          <Link href="/">
+            <Button
+              variant="ghost"
+              className="text-xl xl:text-2xl [&_svg]:size-8 xl:[&_svg]:size-10 py-6"
+            >
+              <LogOut />
             </Button>
           </Link>
         </div>

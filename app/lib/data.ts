@@ -19,33 +19,17 @@ export async function createPost(formData: FormData) {
   const beverage = formData.get("beverage");
   const location = formData.get("location");
   const recommend = formData.get("recommend") === "true";
-
-  const image = formData.get("image");
-  if (image) {
-  }
-
+  const image_url = formData.get("image_url") || "";
   const user_id = await getSession().then((session) => session.userId);
 
   try {
     await sql(
-      "INSERT INTO posts (user_id, content, beverage, location, recommend) VALUES ($1, $2, $3, $4, $5)",
-      [user_id, content, beverage, location, recommend]
+      "INSERT INTO posts (user_id, content, beverage, location, recommend, image_url) VALUES ($1, $2, $3, $4, $5, $6)",
+      [user_id, content, beverage, location, recommend, image_url]
     );
   } catch (error) {
     console.error(error);
     throw new Error("Failed to create post");
-  }
-}
-
-export async function updateCommentRating(id: number, change: number) {
-  try {
-    await sql("UPDATE comments SET rating = rating + $1 WHERE id = $2", [
-      change,
-      id,
-    ]);
-  } catch (error) {
-    console.error(error);
-    throw new Error("Failed to edit comment rating");
   }
 }
 
@@ -87,6 +71,7 @@ export async function getPostById(post_id: number) {
       location: post.location,
       recommend: post.recommend,
       created_at: post.created_at,
+      image_url: post.image_url,
     }))[0];
   } catch (error) {
     console.error(error);
@@ -110,6 +95,7 @@ export async function getPosts() {
       location: post.location,
       recommend: post.recommend,
       created_at: post.created_at,
+      image_url: post.image_url,
     }));
   } catch (error) {
     console.error(error);
@@ -133,4 +119,45 @@ export async function getComments(post_id: number) {
     console.error(error);
     throw new Error("Failed to get comments");
   }
+}
+
+export async function postLike(post_id: number) {
+  const user_id = await getSession().then((session) => session.userId);
+
+  try {
+    await sql(`INSERT INTO likes (user_id, post_id) VALUES ($1, $2)`, [
+      user_id,
+      post_id,
+    ]);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to like post");
+  }
+}
+
+export async function removePostLike(post_id: number) {
+  const user_id = await getSession().then((session) => session.userId);
+
+  try {
+    await sql(`DELETE FROM likes WHERE user_id = $1 AND post_id = $2`, [
+      user_id,
+      post_id,
+    ]);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to remove like");
+  }
+}
+
+export async function postIsLiked(post_id: number, user_id: number) {
+  const result = await sql(
+    `SELECT * FROM likes WHERE user_id = $1 AND post_id = $2`,
+    [user_id, post_id]
+  );
+  return result.length > 0;
+}
+
+export async function getPostLikes(post_id: number) {
+  const result = await sql(`SELECT * FROM likes WHERE post_id = $1`, [post_id]);
+  return result.length;
 }

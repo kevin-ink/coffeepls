@@ -34,6 +34,7 @@ export interface PostProps {
   created_at: string;
   recommend: boolean;
   id: number;
+  image_url?: string;
 }
 
 export interface CommentProps {
@@ -41,5 +42,4 @@ export interface CommentProps {
   content: string;
   created_at: string;
   id: number;
-  rating: number;
 }
