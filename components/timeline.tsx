@@ -39,7 +39,7 @@ export default function Timeline({ posts }: { posts: PostProps[] }) {
   }
 
   return (
-    <div className="pt-10">
+    <div className="max-w-full">
       {posts.map((post) => (
         <div key={post.id}>
           <Post
@@ -48,7 +48,7 @@ export default function Timeline({ posts }: { posts: PostProps[] }) {
           />
         </div>
       ))}
-      <div className="mt-6 text-center text-gray-700">
+      <div className="my-6 text-center text-gray-700">
         You&apos;ve reached the end of the feed.
       </div>
     </div>

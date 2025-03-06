@@ -22,6 +22,9 @@ const likesSlice = createSlice({
       const { postId, likes, liked } = action.payload;
       state[postId] = { likes, liked };
     },
+    resetLikes: () => {
+      return initialState;
+    },
   },
 });
 

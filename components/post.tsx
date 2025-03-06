@@ -1,5 +1,11 @@
 "use client";
-import { MessageSquare, ThumbsUp, ThumbsDown, Heart } from "lucide-react";
+import {
+  MessageSquare,
+  ThumbsUp,
+  ThumbsDown,
+  Heart,
+  Loader,
+} from "lucide-react";
 import { formatDistance, format } from "date-fns";
 import { PostProps } from "@/app/lib/definitions";
 import { useState, useEffect } from "react";
@@ -30,6 +36,7 @@ export default function Post({
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
   const [pending, setPending] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const cachedLikes = useAppSelector((state) => state.likes[post.id]);
   const dispatch = useAppDispatch();
@@ -58,7 +65,7 @@ export default function Post({
       setLiked(liked);
     };
 
-    fetchLiked();
+    fetchLiked().then(() => setLoading(false));
   }, [post.id, cachedLikes, dispatch]);
 
   const handleLike = async () => {
@@ -92,7 +99,7 @@ export default function Post({
   };
 
   return (
-    <div className="w-full h-auto flex flex-col p-5 border-primary gap-y-2 border-t-2">
+    <div className="w-full min-w-full h-fit flex flex-col p-4 border-primary gap-y-2 border-t-2">
       <div
         className={`flex flex-col gap-y-2 ${
           handleClick ? `hover:cursor-pointer` : ""
@@ -114,27 +121,34 @@ export default function Post({
         </div>
         <p>{content}</p>
         {image_url && (
-          <Image
-            className="border-2 rounded mx-auto w-auto h-auto max-h-96 max-w-full"
-            src={image_url}
-            width={0}
-            height={0}
-            sizes="100vw"
-            alt="post image"
-          />
+          <div className="flex justify-center w-full max-h-[300px]">
+            <Image
+              className="border-2 rounded object-cover h-auto w-auto min-w-[300px]"
+              src={image_url}
+              width={0}
+              height={0}
+              sizes="100vw"
+              alt="post image"
+            />
+          </div>
         )}
       </div>
-
       <div className="flex flex-row gap-x-4">
         <div className="flex flex-row gap-x-2">
-          <Heart
-            size={24}
-            onClick={handleLike}
-            className={`hover:cursor-pointer hover:fill-red-500 ${
-              liked ? "fill-red-500" : ""
-            }`}
-          />
-          <span>{likes}</span>
+          {!loading ? (
+            <>
+              <Heart
+                size={24}
+                onClick={handleLike}
+                className={`hover:cursor-pointer hover:fill-red-500 ${
+                  liked ? "fill-red-500" : ""
+                }`}
+              />
+              <span>{likes}</span>
+            </>
+          ) : (
+            <Loader size={24} className="animate-spin" />
+          )}
         </div>
         <MessageSquare
           size={24}

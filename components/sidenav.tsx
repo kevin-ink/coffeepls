@@ -1,58 +1,59 @@
+"use client";
+
 import PostForm from "./post-form";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { getUsername } from "@/app/lib/data";
 import { logout } from "@/app/actions";
 import { Coffee, House, UserRound, CircleUser, LogOut } from "lucide-react";
+import { useAppDispatch } from "@/app/hooks";
 
-export default async function SideNav() {
-  const username = await getUsername();
+export default function SideNav({ username }: { username: string }) {
+  const dispatch = useAppDispatch();
+  const handleLogout = () => {
+    dispatch({
+      type: "likes/resetLikes",
+    });
+    logout();
+  };
 
   return (
-    <div className="py-10 h-screen">
-      <div className="h-full hidden w-auto mx-8 lg:flex flex-col">
+    <div className="py-10 h-full flex flex-col items-end">
+      <div className="h-full hidden lg:flex lg:flex-col w-fit mx-8 ">
         <div className="flex flex-col justify-start flex-grow">
           <Link href="/">
             <Button
               variant="ghost"
-              className="text-3xl xl:text-4xl [&_svg]:size-8 xl:[&_svg]:size-12 py-6 mb-6"
+              className="text-4xl [&_svg]:size-12 py-6 mb-6"
             >
               <Coffee className="fill-primary" />
               coffeepls
             </Button>
           </Link>
-          <Link href="/">
-            <Button
-              variant="ghost"
-              className="text-xl xl:text-2xl [&_svg]:size-8 xl:[&_svg]:size-10 py-6"
-            >
+          <Link href="/" className="w-fit">
+            <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
               <House />
               Home
             </Button>
           </Link>
-          <Link href="/">
-            <Button
-              variant="ghost"
-              className="text-xl xl:text-2xl [&_svg]:size-8 xl:[&_svg]:size-10 py-6"
-            >
+          <Link href="/" className="w-fit">
+            <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
               <UserRound />
               Profile
             </Button>
           </Link>
-          <form action={logout}>
-            <Button
-              variant="ghost"
-              className="text-xl xl:text-2xl [&_svg]:size-8 xl:[&_svg]:size-10 py-6"
-            >
-              <LogOut />
-              Logout
-            </Button>
-          </form>
+          <Button
+            onClick={handleLogout}
+            variant="ghost"
+            className="text-2xl [&_svg]:size-10 py-6 w-fit"
+          >
+            <LogOut />
+            Logout
+          </Button>
         </div>
         <PostForm />
         <span className="text-xl mt-6">{username}</span>
       </div>
-      <div className="h-full lg:hidden w-auto mx-6 flex flex-col">
+      <div className="h-full flex flex-col lg:hidden w-auto mx-6">
         <div className="flex-1 flex flex-col space-y-4 items-start">
           <Link href="/">
             <Button variant="ghost" className="[&_svg]:size-10 py-6">
@@ -65,10 +66,7 @@ export default async function SideNav() {
             </Button>
           </Link>
           <Link href="/">
-            <Button
-              variant="ghost"
-              className="text-xl xl:text-2xl [&_svg]:size-8 xl:[&_svg]:size-10 py-6"
-            >
+            <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
               <LogOut />
             </Button>
           </Link>
