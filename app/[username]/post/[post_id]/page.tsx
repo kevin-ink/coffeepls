@@ -1,11 +1,11 @@
 import PostDetail from "@/components/post-detail";
 import { getPostById } from "@/app/lib/data";
 
-type Params = Promise<{ user_id: string }>;
+type Params = Promise<{ post_id: string }>;
 
 export default async function PostDetailPage({ params }: { params: Params }) {
-  const { user_id } = await params;
-  const post = await getPostById(parseInt(user_id));
+  const { post_id } = await params;
+  const post = await getPostById(parseInt(post_id));
 
   return (
     <div className="w-full h-full flex justify-center">

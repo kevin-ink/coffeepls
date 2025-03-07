@@ -12,13 +12,13 @@ export default async function PostDetail({ post }: { post: PostProps }) {
   const comments = await getComments(post.id);
 
   return (
-    <div className="w-full h-auto flex flex-col gap-y-2 px-5 pt-10">
-      <Link
-        href="/"
-        className="py-4 flex flex-row gap-x-2 items-center w-fit h-fit"
-      >
-        <Button variant="ghost" className="text-lg [&_svg]:size-8">
-          <ArrowLeft /> Back
+    <div className="w-full h-auto flex flex-col gap-y-2">
+      <Link href="/" className="w-fit">
+        <Button
+          variant="ghost"
+          className="text-xl rounded-sm [&_svg]:size-8 w-fit hover:bg-[#D6C0B3]"
+        >
+          <ArrowLeft /> Post
         </Button>
       </Link>
       <Post post={post} />
@@ -29,7 +29,7 @@ export default async function PostDetail({ post }: { post: PostProps }) {
         </p>
       )}
       {comments.map((comment) => (
-        <div key={comment.id}>
+        <div key={comment.id} className="border-t-2 border-t-primary py-2">
           <Comment {...comment} />
         </div>
       ))}

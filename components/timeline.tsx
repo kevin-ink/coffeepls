@@ -41,7 +41,7 @@ export default function Timeline({ posts }: { posts: PostProps[] }) {
   return (
     <div className="max-w-full">
       {posts.map((post) => (
-        <div key={post.id}>
+        <div key={post.id} className="border-t-2 border-primary">
           <Post
             post={post}
             handleClick={() => handlePostClick(post.id, post.username)}

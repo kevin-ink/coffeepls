@@ -99,7 +99,7 @@ export default function Post({
   };
 
   return (
-    <div className="w-full min-w-full h-fit flex flex-col p-4 border-primary gap-y-2 border-t-2">
+    <div className="w-full min-w-full h-fit flex flex-col p-4 gap-y-2">
       <div
         className={`flex flex-col gap-y-2 ${
           handleClick ? `hover:cursor-pointer` : ""
@@ -123,7 +123,7 @@ export default function Post({
         {image_url && (
           <div className="flex justify-center w-full max-h-[300px]">
             <Image
-              className="border-2 rounded object-cover h-auto w-auto min-w-[300px]"
+              className="border-2 rounded object-cover h-auto w-auto min-w-[300px] border-primary"
               src={image_url}
               width={0}
               height={0}

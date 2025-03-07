@@ -43,7 +43,7 @@ export default function CommentForm({ post_id }: { post_id: number }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="pb-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="pb-4 px-4">
         <FormField
           control={form.control}
           name="content"

@@ -57,7 +57,7 @@ export async function getUsername() {
 export async function getPostById(post_id: number) {
   try {
     const post = await sql(
-      `SELECT posts.*, users.username 
+      `SELECT posts.*, users.username
        FROM posts 
        JOIN users ON posts.user_id = users.id 
        WHERE post_id = $1`,
@@ -86,6 +86,59 @@ export async function getPosts() {
        JOIN users ON posts.user_id = users.id 
        ORDER BY posts.created_at DESC 
        LIMIT 5`
+    );
+    return posts.map((post) => ({
+      id: post.post_id,
+      username: post.username,
+      content: post.content,
+      beverage: post.beverage,
+      location: post.location,
+      recommend: post.recommend,
+      created_at: post.created_at,
+      image_url: post.image_url,
+    }));
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to get posts");
+  }
+}
+
+export async function getPostsByUsername(username: string) {
+  try {
+    const posts = await sql(
+      `SELECT posts.*, users.username 
+       FROM posts 
+       JOIN users ON posts.user_id = users.id 
+       WHERE users.username = $1
+       ORDER BY posts.created_at DESC`,
+      [username]
+    );
+    return posts.map((post) => ({
+      id: post.post_id,
+      username: post.username,
+      content: post.content,
+      beverage: post.beverage,
+      location: post.location,
+      recommend: post.recommend,
+      created_at: post.created_at,
+      image_url: post.image_url,
+    }));
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to get posts");
+  }
+}
+
+export async function getPostsByUserLiked(username: string) {
+  try {
+    const posts = await sql(
+      `SELECT posts.*, users.username
+      FROM Likes
+      JOIN Posts ON likes.post_id = posts.post_id
+      JOIN Users ON likes.user_id = users.id
+      WHERE users.username = $1;
+      `,
+      [username]
     );
     return posts.map((post) => ({
       id: post.post_id,

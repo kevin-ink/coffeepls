@@ -35,7 +35,7 @@ export default function SideNav({ username }: { username: string }) {
               Home
             </Button>
           </Link>
-          <Link href="/" className="w-fit">
+          <Link href={`/${username}`} className="w-fit">
             <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
               <UserRound />
               Profile
