@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
+import { updateUserCaffeine, getUserCaffeine } from "@/app/lib/data";
 
 export default function Tracker() {
   const date = new Date().toLocaleDateString("en-US", {
@@ -30,23 +31,25 @@ export default function Tracker() {
   const [drink, setDrink] = useState("");
   const [amount, setAmount] = useState(0);
   const [caffeine, setCaffeine] = useState(0);
-  const [items, setItems] = useState<
-    { drink: string; amount: number; caffeine: number }[]
-  >([]);
+  const [items, setItems] = useState(0);
   const [totalCaffeine, setTotalCaffeine] = useState(0);
   const goal = 400;
 
   const handleAddItem = async () => {
-    if (drink && amount > 0) {
-      const newItem = { drink, amount, caffeine };
-      setItems((prevItems) => [...prevItems, newItem]);
+    const res = await updateUserCaffeine(caffeine, date);
+
+    if (res) {
+      setItems(res.items);
+      setTotalCaffeine(res.caffeine);
+      setDrink("");
+      setAmount(0);
+      setCaffeine(0);
+    } else {
+      console.error("Failed to update caffeine");
+      setDrink("");
       setAmount(0);
       setCaffeine(0);
     }
-    setTotalCaffeine((prevTotal) => prevTotal + caffeine);
-    setDrink("");
-    setAmount(0);
-    setCaffeine(0);
   };
 
   useEffect(() => {
@@ -54,6 +57,19 @@ export default function Tracker() {
       setCaffeine(calculateCaffeine(drink as DrinkType, amount));
     }
   }, [drink, amount]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await getUserCaffeine(date);
+
+      if (res) {
+        setItems(res.items);
+        setTotalCaffeine(res.caffeine);
+      }
+    }
+
+    fetchData();
+  });
 
   return (
     <div className="w-fit max-w-[400px] h-full hidden lg:flex p-4 lg:flex-col items-center ">
@@ -74,7 +90,7 @@ export default function Tracker() {
             mg consumed today
           </p>
           <p>
-            <span className="font-bold">{items.length}</span> drinks
+            <span className="font-bold">{items}</span> drinks
           </p>
           <p className="text-sm">
             Your goal is to stay under{" "}

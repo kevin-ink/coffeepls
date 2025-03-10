@@ -28,7 +28,8 @@ export async function createPost(formData: FormData) {
       [user_id, content, beverage, location, recommend, image_url]
     );
   } catch (error) {
-    return { error: error instanceof Error ? error.message : String(error) };
+    console.error(error);
+    throw new Error("Failed to create post");
   }
 }
 
@@ -212,4 +213,55 @@ export async function postIsLiked(post_id: number, user_id: number) {
 export async function getPostLikes(post_id: number) {
   const result = await sql(`SELECT * FROM likes WHERE post_id = $1`, [post_id]);
   return result.length;
+}
+
+export async function updateUserCaffeine(caffeine: number, date: string) {
+  const user_id = await getSession().then((session) => session.userId);
+
+  try {
+    const result = await sql(
+      `INSERT INTO caffeine (user_id, date, caffeine_total, items)
+      VALUES ($1, $2, $3, $4)
+      ON CONFLICT (user_id, date)
+      DO UPDATE 
+      SET 
+        caffeine_total = caffeine.caffeine_total + $3,
+        items = caffeine.items + 1
+      RETURNING caffeine_total, items;
+      `,
+      [user_id, date, caffeine, 1]
+    );
+
+    if (result && result.length > 0) {
+      return {
+        caffeine: result[0].caffeine_total,
+        items: result[0].items,
+      };
+    } else {
+      throw new Error("Failed to update caffeine");
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to update caffeine");
+  }
+}
+
+export async function getUserCaffeine(date: string) {
+  const user_id = await getSession().then((session) => session.userId);
+
+  try {
+    const res = await sql(
+      `SELECT caffeine_total, items FROM caffeine WHERE user_id = $1 AND date = $2`,
+      [user_id, date]
+    );
+
+    if (res) {
+      return {
+        caffeine: res[0].caffeine_total,
+        items: res[0].items,
+      };
+    }
+  } catch {
+    return;
+  }
 }
