@@ -49,13 +49,13 @@ export default function SideNav({ username }: { username: string }) {
               Profile
             </Button>
           </Link>
-          <Link href={`/`} className="w-fit">
+          <Link href={`/journal`} className="w-fit">
             <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
               <ScrollText />
               Journal
             </Button>
           </Link>
-          <Link href={`/`} className="w-fit">
+          <Link href={`/settings`} className="w-fit">
             <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
               <Settings />
               Settings
@@ -85,12 +85,12 @@ export default function SideNav({ username }: { username: string }) {
               <UserRound />
             </Button>
           </Link>
-          <Link href={`/`} className="w-fit">
+          <Link href={`/journal`} className="w-fit">
             <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
               <ScrollText />
             </Button>
           </Link>
-          <Link href={`/`} className="w-fit">
+          <Link href={`/settings`} className="w-fit">
             <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
               <Settings />
             </Button>

@@ -265,3 +265,19 @@ export async function getUserCaffeine(date: string) {
     return;
   }
 }
+
+export async function getCaffeineHistory() {
+  const user_id = await getSession().then((session) => session.userId);
+
+  try {
+    const logs =
+      await sql`SELECT * FROM caffeine WHERE user_id = ${user_id} ORDER BY date DESC`;
+    return logs.map((log) => ({
+      date: log.date,
+      caffeine: log.caffeine_total,
+      items: log.items,
+    }));
+  } catch {
+    return [];
+  }
+}

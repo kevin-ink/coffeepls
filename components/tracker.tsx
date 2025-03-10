@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
 import { updateUserCaffeine, getUserCaffeine } from "@/app/lib/data";
+import { getSettings } from "@/app/lib/user_settings";
 
 export default function Tracker() {
   const date = new Date().toLocaleDateString("en-US", {
@@ -33,7 +34,7 @@ export default function Tracker() {
   const [caffeine, setCaffeine] = useState(0);
   const [items, setItems] = useState(0);
   const [totalCaffeine, setTotalCaffeine] = useState(0);
-  const goal = 400;
+  const [goal, setGoal] = useState(400);
 
   const handleAddItem = async () => {
     const res = await updateUserCaffeine(caffeine, date);
@@ -61,10 +62,15 @@ export default function Tracker() {
   useEffect(() => {
     async function fetchData() {
       const res = await getUserCaffeine(date);
+      const goal = await getSettings();
 
       if (res) {
         setItems(res.items);
         setTotalCaffeine(res.caffeine);
+      }
+
+      if (goal) {
+        setGoal(goal.caffeine_limit);
       }
     }
 
