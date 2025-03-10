@@ -65,31 +65,27 @@ export default function PostForm({ variant }: { variant?: string }) {
     formData.append("location", values.location);
     formData.append("recommend", values.recommend.toString());
 
-    try {
-      if (values.image) {
-        const signedURLResult = getSignedURL();
-        if ("error" in signedURLResult) {
-          console.error(signedURLResult.error);
-          return;
-        }
-
-        const result = await signedURLResult;
-        if (result.url) {
-          await fetch(result.url, {
-            method: "PUT",
-            body: values.image,
-            headers: { "Content-Type": values.image.type },
-          });
-          formData.append("image_url", result.url.split("?")[0]);
-        }
+    if (values.image) {
+      const signedURLResult = await getSignedURL();
+      if (signedURLResult.error) {
+        console.error("Error getting signed URL:", signedURLResult.error);
+        return;
       }
-      createPost(formData);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setOpen(false);
-      form.reset();
+
+      if (signedURLResult.url) {
+        await fetch(signedURLResult.url, {
+          method: "PUT",
+          body: values.image,
+          headers: { "Content-Type": values.image.type },
+        });
+        formData.append("image_url", signedURLResult.url.split("?")[0]);
+      }
     }
+
+    createPost(formData);
+
+    setOpen(false);
+    form.reset();
   }
 
   return (

@@ -28,8 +28,7 @@ export async function createPost(formData: FormData) {
       [user_id, content, beverage, location, recommend, image_url]
     );
   } catch (error) {
-    console.error(error);
-    throw new Error("Failed to create post");
+    return { error: error instanceof Error ? error.message : String(error) };
   }
 }
 

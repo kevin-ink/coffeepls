@@ -4,7 +4,15 @@ import PostForm from "./post-form";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { logout } from "@/app/actions";
-import { Coffee, House, UserRound, CircleUser, LogOut } from "lucide-react";
+import {
+  Coffee,
+  House,
+  UserRound,
+  CircleUser,
+  LogOut,
+  Settings,
+  ScrollText,
+} from "lucide-react";
 import { useAppDispatch } from "@/app/hooks";
 
 export default function SideNav({ username }: { username: string }) {
@@ -41,6 +49,18 @@ export default function SideNav({ username }: { username: string }) {
               Profile
             </Button>
           </Link>
+          <Link href={`/`} className="w-fit">
+            <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
+              <ScrollText />
+              Journal
+            </Button>
+          </Link>
+          <Link href={`/`} className="w-fit">
+            <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
+              <Settings />
+              Settings
+            </Button>
+          </Link>
           <Button
             onClick={handleLogout}
             variant="ghost"
@@ -60,16 +80,28 @@ export default function SideNav({ username }: { username: string }) {
               <House />
             </Button>
           </Link>
-          <Link href="/">
-            <Button variant="ghost" className="[&_svg]:size-10 py-6">
-              <Coffee />
-            </Button>
-          </Link>
-          <Link href="/">
+          <Link href={`/${username}`} className="w-fit">
             <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
-              <LogOut />
+              <UserRound />
             </Button>
           </Link>
+          <Link href={`/`} className="w-fit">
+            <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
+              <ScrollText />
+            </Button>
+          </Link>
+          <Link href={`/`} className="w-fit">
+            <Button variant="ghost" className="text-2xl [&_svg]:size-10 py-6">
+              <Settings />
+            </Button>
+          </Link>
+          <Button
+            onClick={handleLogout}
+            variant="ghost"
+            className="text-2xl [&_svg]:size-10 py-6 w-fit"
+          >
+            <LogOut />
+          </Button>
         </div>
         <PostForm variant="compact" />
         <Link href="/">
